@@ -1,3 +1,4 @@
+import 'package:aims/login_page.dart';
 import 'package:aims/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -294,9 +295,9 @@ class _RegisterPageState extends State<RegistrationPage> {
         backgroundColor: Colors.green,
         textColor: Colors.white,
         fontSize: 16.0);
-    //   Navigator.pushAndRemoveUntil(
-    //       context,
-    //       MaterialPageRoute(builder: (context) => const LoginPage()),
-    //       (Route<dynamic> route) => false);
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+        (Route<dynamic> route) => false);
   }
 }
