@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import 'multi_form.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -118,10 +120,10 @@ class _HomePageState extends State<HomePage> {
         child: const Icon(Icons.add),
         backgroundColor: Colors.green,
         onPressed: () {
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => MultiForm()),
-          // );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => MultiForm()),
+          );
         },
       ),
       body: ListView.builder(
