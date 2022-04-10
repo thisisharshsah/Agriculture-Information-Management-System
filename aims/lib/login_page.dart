@@ -1,3 +1,4 @@
+import 'package:aims/home_page.dart';
 import 'package:aims/registration_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -91,7 +92,10 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
         minWidth: MediaQuery.of(context).size.width,
         onPressed: () {
-          signIn(emailController.text, passwordController.text);
+          if (_formKey.currentState!.validate()) {
+            _formKey.currentState!.save();
+            signIn(emailController.text, passwordController.text);
+          }
         },
         child: const Text(
           'Login',
@@ -153,9 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        const RegistrationPage(),
-                                  ),
+                                      builder: (context) => RegistrationPage()),
                                 );
                               },
                               child: const Text(
@@ -191,10 +193,10 @@ class _LoginPageState extends State<LoginPage> {
             backgroundColor: Colors.green,
             textColor: Colors.white,
             fontSize: 16.0);
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => const HomePage()),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
       }).catchError((e) {
         Fluttertoast.showToast(
             msg: e.toString(),
