@@ -30,13 +30,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  final List<String> imagesList = [
-    'https://samriddhi.org/wp-content/uploads/2020/03/Agricultural-Overhaul-01-March-2020.jpg',
-    'https://myrepublica.nagariknetwork.com/uploads/media/farmer-plows-a-field_20190921084105.jpg',
-    'https://assets-api.kathmandupost.com/thumb.php?src=https://assets-cdn.kathmandupost.com/uploads/source/news/2020/opinion/6-lead.-Shutterstock.jpg&w=900&height=601',
-    'https://www.datocms-assets.com/7165/1572878498-agr.jpg?auto=format&dpr=1&w=1600'
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,11 +101,8 @@ class _HomePageState extends State<HomePage> {
               MaterialPageRoute(builder: (context) => const HomePage()),
             );
           }
-          if (index == 2) {
-            // Navigator.push(
-            //   context,
-            //   MaterialPageRoute(builder: (context) => const ProfilePage()),
-            // );
+          if (index == 1) {
+            logout();
           }
         },
       ),
@@ -127,7 +117,7 @@ class _HomePageState extends State<HomePage> {
         },
       ),
       body: ListView.builder(
-        itemCount: 3,
+        itemCount: 1,
         itemBuilder: (context, index) {
           return Container(
             padding: const EdgeInsets.all(10),
@@ -136,8 +126,9 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: <Widget>[
                     const ListTile(
-                      title: Text('Crop Name'),
-                      subtitle: Text('Description'),
+                      title: Text('Wheat'),
+                      subtitle: Text(
+                          'Wheat is an annual grass that usually is planted at the end of the summer. It overwinters and then starts growing and maturing towards the end of spring and beginning of the summer. Plant Characteristics: Wheat is a bunch grass with upright tillers. The leaves are rolled in the whorl.'),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
