@@ -1,5 +1,6 @@
-import 'package:aims/login_page.dart';
-import 'package:aims/user_model.dart';
+import 'package:aims/models/crops_model.dart';
+import 'package:aims/screens/login_page.dart';
+import 'package:aims/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   User? user = FirebaseAuth.instance.currentUser;
   UserModel loggedInUser = UserModel();
+  Crops crops = Crops();
 
   @override
   void initState() {
@@ -26,6 +28,7 @@ class _HomePageState extends State<HomePage> {
         .get()
         .then((value) {
       loggedInUser = UserModel.fromMap(value.data());
+      crops = Crops.fromMap(value.data());
       setState(() {});
     });
   }
@@ -125,10 +128,10 @@ class _HomePageState extends State<HomePage> {
               child: Card(
                 child: Column(
                   children: <Widget>[
-                    const ListTile(
-                      title: Text('Wheat'),
+                    ListTile(
+                      title: Text("${crops.name}"),
                       subtitle: Text(
-                          'Wheat is an annual grass that usually is planted at the end of the summer. It overwinters and then starts growing and maturing towards the end of spring and beginning of the summer. Plant Characteristics: Wheat is a bunch grass with upright tillers. The leaves are rolled in the whorl.'),
+                          '${crops.production} - Farmer Rate: ${crops.farmerRate} - Market Rate:${crops.marketRate} - Description: ${crops.cropDescription}'),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,

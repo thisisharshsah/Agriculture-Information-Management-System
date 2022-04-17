@@ -1,15 +1,21 @@
-import 'package:aims/add_page.dart';
-import 'package:aims/user_model.dart';
+import 'package:aims/models/crops_model.dart';
+import 'package:aims/screens/add_page.dart';
+
 import 'package:flutter/material.dart';
 
 class MultiForm extends StatefulWidget {
+  const MultiForm({Key? key}) : super(key: key);
+
   @override
   _MultiFormState createState() => _MultiFormState();
 }
 
 class _MultiFormState extends State<MultiForm> {
+  final formKey = GlobalKey<FormState>();
+
   List<Crops> crops = [];
   List<AddPage> pages = [];
+
   @override
   Widget build(BuildContext context) {
     pages.clear();
@@ -22,18 +28,14 @@ class _MultiFormState extends State<MultiForm> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Crops'),
-        actions: [
-          FlatButton(
-              child: Text('Save', style: TextStyle(color: Colors.white)),
-              onPressed: onSave)
-        ],
+        title: const Text('Add Crops'),
+        actions: [ElevatedButton(child: const Text('Save'), onPressed: onSave)],
         backgroundColor: Colors.green,
       ),
-      body: crops.length == 0
+      body: crops.isEmpty
           ? Center(
               child: RichText(
-                text: TextSpan(
+                text: const TextSpan(
                   children: <TextSpan>[
                     TextSpan(
                         text: 'No crops added yet.\n',
@@ -50,7 +52,7 @@ class _MultiFormState extends State<MultiForm> {
               itemBuilder: (_, int index) => pages[index],
             ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
         backgroundColor: Colors.green,
         onPressed: () {
           setState(() {
@@ -69,7 +71,9 @@ class _MultiFormState extends State<MultiForm> {
 
   void onSave() {
     for (var form in pages) {
-      form.isValid();
+      if (form.isValid()) {
+        form.save();
+      }
     }
   }
 }

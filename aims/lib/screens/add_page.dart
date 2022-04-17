@@ -1,12 +1,15 @@
-import 'package:aims/user_model.dart';
+import 'package:aims/models/crops_model.dart';
+import 'package:aims/models/user_model.dart';
+import 'package:aims/screens/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 typedef OnDelete();
 
 class AddPage extends StatefulWidget {
   FirebaseFirestore firebasefirestore = FirebaseFirestore.instance;
-  UserModel loggedInUser = UserModel();
   final Crops? crop;
   final state = _AddPageState();
   final OnDelete? onDelete;
@@ -14,12 +17,21 @@ class AddPage extends StatefulWidget {
   AddPage({Key? key, this.crop, this.onDelete}) : super(key: key);
   @override
   _AddPageState createState() => state;
-
   bool isValid() => state.validate();
+
+  Future save() => state.save();
 }
 
 class _AddPageState extends State<AddPage> {
   final formKey = GlobalKey<FormState>();
+  User? user = FirebaseAuth.instance.currentUser;
+  UserModel loggedInUser = UserModel();
+
+  final nameController = TextEditingController();
+  final productionController = TextEditingController();
+  final farmerRateController = TextEditingController();
+  final marketRateController = TextEditingController();
+  final cropDescriptionController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +75,9 @@ class _AddPageState extends State<AddPage> {
                     }
                     return null;
                   },
-                  onSaved: (value) {},
+                  onSaved: (value) {
+                    nameController.text = value!;
+                  },
                 ),
               ),
               Padding(
@@ -83,7 +97,9 @@ class _AddPageState extends State<AddPage> {
                     }
                     return null;
                   },
-                  onSaved: (value) {},
+                  onSaved: (value) {
+                    productionController.text = value!;
+                  },
                 ),
               ),
               Row(
@@ -106,7 +122,9 @@ class _AddPageState extends State<AddPage> {
                           }
                           return null;
                         },
-                        onSaved: (value) {},
+                        onSaved: (value) {
+                          farmerRateController.text = value!;
+                        },
                       ),
                     ),
                   ),
@@ -128,7 +146,9 @@ class _AddPageState extends State<AddPage> {
                           }
                           return null;
                         },
-                        onSaved: (value) {},
+                        onSaved: (value) {
+                          marketRateController.text = value!;
+                        },
                       ),
                     ),
                   ),
@@ -153,7 +173,9 @@ class _AddPageState extends State<AddPage> {
                     }
                     return null;
                   },
-                  onSaved: (value) {},
+                  onSaved: (value) {
+                    cropDescriptionController.text = value!;
+                  },
                 ),
               ),
             ],
@@ -167,5 +189,39 @@ class _AddPageState extends State<AddPage> {
     var valid = formKey.currentState!.validate();
     if (valid) formKey.currentState!.save();
     return valid;
+  }
+
+  save() async {
+    if (validate()) {
+      try {
+        final crop = Crops(
+          name: nameController.text,
+          production: productionController.text,
+          farmerRate: farmerRateController.text,
+          marketRate: marketRateController.text,
+          cropDescription: cropDescriptionController.text,
+          uid: user!.uid,
+        );
+        await widget.firebasefirestore.collection('crops').add(crop.toMap());
+        Fluttertoast.showToast(
+            msg: 'Crop Added Successfully',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        Navigator.pop(context);
+      } catch (e) {
+        Fluttertoast.showToast(
+            msg: 'Error: $e',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
+    }
   }
 }
