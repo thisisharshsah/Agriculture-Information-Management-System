@@ -28,7 +28,6 @@ class _HomePageState extends State<HomePage> {
         .get()
         .then((value) {
       loggedInUser = UserModel.fromMap(value.data());
-      crops = Crops.fromMap(value.data());
       setState(() {});
     });
   }
@@ -104,9 +103,7 @@ class _HomePageState extends State<HomePage> {
               MaterialPageRoute(builder: (context) => const HomePage()),
             );
           }
-          if (index == 1) {
-            logout();
-          }
+          if (index == 1) {}
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -115,42 +112,67 @@ class _HomePageState extends State<HomePage> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => MultiForm()),
+            MaterialPageRoute(builder: (context) => const MultiForm()),
           );
         },
       ),
-      body: ListView.builder(
-        itemCount: 1,
-        itemBuilder: (context, index) {
-          return Container(
-            padding: const EdgeInsets.all(10),
-            child: GestureDetector(
-              child: Card(
-                child: Column(
-                  children: <Widget>[
-                    ListTile(
-                      title: Text("${crops.name}"),
-                      subtitle: Text(
-                          '${crops.production} - Farmer Rate: ${crops.farmerRate} - Market Rate:${crops.marketRate} - Description: ${crops.cropDescription}'),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {},
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('crops')
+            .where('uid', isEqualTo: user!.uid)
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          final data = snapshot.requireData;
+          return ListView.builder(
+            itemCount: data.size,
+            itemBuilder: (context, index) {
+              return Container(
+                padding: const EdgeInsets.all(10),
+                child: GestureDetector(
+                  child: Card(
+                    child: Column(
+                      children: <Widget>[
+                        ListTile(
+                          title: Text(
+                            '${data.docs[index].data()['name']}',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: Text(
+                            '${data.docs[index].data()['cropDescription']}',
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {},
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () {},
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {},
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
+                  ),
+                  onTap: () {},
                 ),
-              ),
-              onTap: () {},
-            ),
+              );
+            },
           );
         },
       ),

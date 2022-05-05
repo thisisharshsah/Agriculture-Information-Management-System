@@ -33,7 +33,7 @@ class Crops {
     return {
       'uid': uid,
       'name': name,
-      'roduction': production,
+      'production': production,
       'farmerRate': farmerRate,
       'marketRate': marketRate,
       'cropDescription': cropDescription,

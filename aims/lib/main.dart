@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'AIMS',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       getPages: [
