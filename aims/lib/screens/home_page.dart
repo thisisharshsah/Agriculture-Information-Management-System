@@ -1,6 +1,7 @@
 import 'package:aims/models/crops_model.dart';
 import 'package:aims/screens/login_page.dart';
 import 'package:aims/models/user_model.dart';
+import 'package:aims/widgets/bottom_navigation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -73,40 +74,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 )),
           )),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.black,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Profile',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Notifications',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
-        currentIndex: 0,
-        onTap: (int index) {
-          if (index == 0) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const HomePage()),
-            );
-          }
-          if (index == 1) {}
-        },
-      ),
+      bottomNavigationBar: bottonNavigation(context),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         backgroundColor: Colors.green,

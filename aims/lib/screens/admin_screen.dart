@@ -1,6 +1,7 @@
 import 'package:aims/models/user_model.dart';
 import 'package:aims/screens/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -12,11 +13,15 @@ class AdminScreen extends StatefulWidget {
 }
 
 class _AdminScreenState extends State<AdminScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _roleController = TextEditingController(text: 'admin');
-  final _passwordController = TextEditingController(text: 'aims');
+  final _passwordController = TextEditingController(text: 'aims1234');
+
+  final _auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -93,145 +98,169 @@ class _AdminScreenState extends State<AdminScreen> {
       context: context,
       builder: (context) => Center(
         child: SingleChildScrollView(
-          child: AlertDialog(
-            title: const Text('Add User'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextFormField(
-                  controller: _firstNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'First Name',
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter first name';
-                    } else if (value.length < 3) {
-                      return 'First name must be at least 3 characters';
-                    } else if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
-                      return 'First name must be alphabetic';
-                    }
+          child: Form(
+            key: _formKey,
+            child: AlertDialog(
+              title: const Text('Add User'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: _firstNameController,
+                    decoration: const InputDecoration(
+                      labelText: 'First Name',
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter first name';
+                      } else if (value.length < 3) {
+                        return 'First name must be at least 3 characters';
+                      } else if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+                        return 'First name must be alphabetic';
+                      }
 
-                    return null;
+                      return null;
+                    },
+                    onSaved: (value) => _firstNameController.text = value!,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  TextFormField(
+                    controller: _lastNameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Last Name',
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter last name';
+                      } else if (value.length < 3) {
+                        return 'Last name must be at least 3 characters';
+                      } else if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+                        return 'Last name must be alphabetic';
+                      }
+
+                      return null;
+                    },
+                    onSaved: (value) => _lastNameController.text = value!,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  TextFormField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter email';
+                      } else if (!RegExp(
+                              r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$')
+                          .hasMatch(value)) {
+                        return 'Please enter a valid email';
+                      }
+
+                      return null;
+                    },
+                    onSaved: (value) => _emailController.text = value!,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  TextFormField(
+                    controller: _roleController,
+                    decoration: const InputDecoration(
+                      labelText: 'Role',
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter role';
+                      } else if (value.length < 3) {
+                        return 'Role must be at least 3 characters';
+                      } else if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
+                        return 'Role must be alphabetic';
+                      }
+
+                      return null;
+                    },
+                    onSaved: (value) => _roleController.text = value!,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  TextFormField(
+                    controller: _passwordController,
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter password';
+                      } else if (value.length < 6) {
+                        return 'Password must be at least 6 characters';
+                      } else if (value.length > 12) {
+                        return 'Password must be less than 12 characters';
+                      }
+
+                      return null;
+                    },
+                    onSaved: (value) => _passwordController.text = value!,
+                    textInputAction: TextInputAction.done,
+                  ),
+                ],
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                  child: const Text('Add'),
+                  onPressed: () {
+                    addUserToAuth(
+                        _emailController.text, _passwordController.text);
+                    Navigator.pop(context);
                   },
-                  onSaved: (value) => _firstNameController.text = value!,
-                  textInputAction: TextInputAction.next,
                 ),
-                TextFormField(
-                  controller: _lastNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Last Name',
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter last name';
-                    } else if (value.length < 3) {
-                      return 'Last name must be at least 3 characters';
-                    } else if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
-                      return 'Last name must be alphabetic';
-                    }
+                ElevatedButton(
+                  child: const Text('Cancel'),
+                  onPressed: () {
+                    _firstNameController.clear();
+                    _lastNameController.clear();
+                    _emailController.clear();
 
-                    return null;
+                    Navigator.pop(context);
                   },
-                  onSaved: (value) => _lastNameController.text = value!,
-                  textInputAction: TextInputAction.next,
-                ),
-                TextFormField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email',
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter email';
-                    } else if (!RegExp(
-                            r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$')
-                        .hasMatch(value)) {
-                      return 'Please enter a valid email';
-                    }
-
-                    return null;
-                  },
-                  onSaved: (value) => _emailController.text = value!,
-                  textInputAction: TextInputAction.next,
-                ),
-                TextFormField(
-                  controller: _roleController,
-                  decoration: const InputDecoration(
-                    labelText: 'Role',
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter role';
-                    } else if (value.length < 3) {
-                      return 'Role must be at least 3 characters';
-                    } else if (!RegExp(r'^[a-zA-Z]+$').hasMatch(value)) {
-                      return 'Role must be alphabetic';
-                    }
-
-                    return null;
-                  },
-                  onSaved: (value) => _roleController.text = value!,
-                  textInputAction: TextInputAction.next,
-                ),
-                TextFormField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                  ),
-                  validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter password';
-                    } else if (value.length < 6) {
-                      return 'Password must be at least 6 characters';
-                    } else if (value.length > 12) {
-                      return 'Password must be less than 12 characters';
-                    }
-
-                    return null;
-                  },
-                  onSaved: (value) => _passwordController.text = value!,
-                  textInputAction: TextInputAction.done,
                 ),
               ],
             ),
-            actions: <Widget>[
-              ElevatedButton(
-                child: const Text('Add'),
-                onPressed: () {
-                  addUserToFirebase();
-                  Navigator.pop(context);
-                },
-              ),
-              ElevatedButton(
-                child: const Text('Cancel'),
-                onPressed: () {
-                  _firstNameController.clear();
-                  _lastNameController.clear();
-                  _emailController.clear();
-
-                  Navigator.pop(context);
-                },
-              ),
-            ],
           ),
         ),
       ),
     );
   }
 
-  void addUserToFirebase() async {
-    final UserModel user = UserModel(
-      firstName: _firstNameController.text,
-      secondName: _lastNameController.text,
-      email: _emailController.text,
-      role: _roleController.text,
-      password: _passwordController.text,
-    );
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(user.uid)
-        .set(user.toMap());
+  void addUserToAuth(String email, String password) async {
+    if (_formKey.currentState!.validate()) {
+      await _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((value) => {addUserToFirebase()})
+          .catchError((error) {
+        Fluttertoast.showToast(
+            msg: error.toString(),
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      });
+    }
+  }
+
+  addUserToFirebase() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    User? user = _auth.currentUser;
+
+    UserModel userModel = UserModel();
+
+    userModel.firstName = _firstNameController.text;
+    userModel.secondName = _lastNameController.text;
+    userModel.email = user!.email;
+    userModel.uid = user.uid;
+    userModel.role = _roleController.text;
+    userModel.password = _passwordController.text;
+
+    await firestore.collection('users').doc(user.uid).set(userModel.toMap());
 
     _firstNameController.clear();
     _lastNameController.clear();
