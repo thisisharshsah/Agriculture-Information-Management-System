@@ -1,6 +1,5 @@
 import 'package:aims/models/crops_model.dart';
 import 'package:aims/models/user_model.dart';
-import 'package:aims/screens/home_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -211,7 +210,6 @@ class _AddPageState extends State<AddPage> {
             backgroundColor: Colors.green,
             textColor: Colors.white,
             fontSize: 16.0);
-        Navigator.pop(context);
       } catch (e) {
         Fluttertoast.showToast(
             msg: 'Error: $e',

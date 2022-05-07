@@ -1,7 +1,6 @@
 import 'package:aims/screens/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -18,15 +17,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
+    return MaterialApp(
       title: 'AIMS',
       theme: ThemeData(
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      getPages: [
-        GetPage(name: '/', page: () => LoginPage()),
-      ],
+      home: const LoginPage(),
     );
   }
 }

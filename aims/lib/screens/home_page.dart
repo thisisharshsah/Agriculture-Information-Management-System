@@ -4,6 +4,7 @@ import 'package:aims/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'multi_form.dart';
 
@@ -158,11 +159,15 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             IconButton(
                               icon: const Icon(Icons.edit),
-                              onPressed: () {},
+                              onPressed: () {
+                                showUpdateDialog(context, data.docs[index]);
+                              },
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete),
-                              onPressed: () {},
+                              onPressed: () {
+                                showDeleteDialouge(context, data.docs[index]);
+                              },
                             ),
                           ],
                         ),
@@ -184,6 +189,105 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
+  }
+
+  void showDeleteDialouge(BuildContext context, doc) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete'),
+        content: const Text('Are you sure you want to delete this crop?'),
+        actions: <Widget>[
+          ElevatedButton(
+            child: const Text('Yes'),
+            onPressed: () {
+              FirebaseFirestore.instance
+                  .collection('crops')
+                  .doc(doc.id)
+                  .delete();
+              Navigator.pop(context);
+              Fluttertoast.showToast(
+                msg: 'Crop deleted successfully',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.green,
+                textColor: Colors.white,
+                fontSize: 16.0,
+              );
+            },
+          ),
+          ElevatedButton(
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showUpdateDialog(BuildContext context, doc) {
+    final _nameController = TextEditingController(
+      text: doc.data()['name'],
+    );
+    final _descriptionController = TextEditingController(
+      text: doc.data()['cropDescription'],
+    );
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Update'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            TextField(
+              controller: _nameController,
+              decoration: const InputDecoration(
+                labelText: 'Name',
+              ),
+            ),
+            TextField(
+              controller: _descriptionController,
+              decoration: const InputDecoration(
+                labelText: 'Description',
+              ),
+            ),
+          ],
+        ),
+        actions: <Widget>[
+          ElevatedButton(
+            child: const Text('Update'),
+            onPressed: () {
+              FirebaseFirestore.instance
+                  .collection('crops')
+                  .doc(doc.id)
+                  .update({
+                'name': _nameController.text,
+                'cropDescription': _descriptionController.text,
+              });
+              Navigator.pop(context);
+              Fluttertoast.showToast(
+                msg: 'Crop updated successfully',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.green,
+                textColor: Colors.white,
+                fontSize: 16.0,
+              );
+            },
+          ),
+          ElevatedButton(
+            child: const Text('Cancel'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
     );
   }
 }

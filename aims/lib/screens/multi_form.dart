@@ -1,9 +1,7 @@
 import 'package:aims/models/crops_model.dart';
 import 'package:aims/screens/add_page.dart';
 import 'package:aims/screens/home_page.dart';
-
 import 'package:flutter/material.dart';
-import 'package:get/route_manager.dart';
 
 class MultiForm extends StatefulWidget {
   const MultiForm({Key? key}) : super(key: key);
@@ -77,7 +75,9 @@ class _MultiFormState extends State<MultiForm> {
         form.save();
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(
+            builder: (context) => const HomePage(),
+          ),
         );
       }
     }

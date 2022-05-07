@@ -282,6 +282,8 @@ class _RegisterPageState extends State<RegistrationPage> {
     userModel.uid = user.uid;
     userModel.firstName = firstNameEditingController.text;
     userModel.secondName = secondNameEditingController.text;
+    userModel.password = confirmPasswordEditingController.text;
+    userModel.role = 'user';
 
     await firebasefirestore
         .collection("users")

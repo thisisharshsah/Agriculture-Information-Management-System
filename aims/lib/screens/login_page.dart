@@ -1,5 +1,6 @@
 import 'package:aims/screens/home_page.dart';
 import 'package:aims/screens/registration_page.dart';
+import 'package:aims/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -181,6 +182,7 @@ class _LoginPageState extends State<LoginPage> {
   // login function
   void signIn(String email, String password) async {
     // validate form
+
     if (_formKey.currentState!.validate()) {
       await _auth
           .signInWithEmailAndPassword(email: email, password: password)
@@ -195,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
             fontSize: 16.0);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(builder: (context) => const SplashScreen()),
         );
       }).catchError((e) {
         Fluttertoast.showToast(
