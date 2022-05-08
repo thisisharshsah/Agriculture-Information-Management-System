@@ -142,21 +142,13 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ),
-                  onTap: () {},
+                  onTap: () => viewCropsDetails(context, data.docs[index]),
                 ),
               );
             },
           );
         },
       ),
-    );
-  }
-
-  Future<void> logout() async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
     );
   }
 
@@ -204,57 +196,174 @@ class _HomePageState extends State<HomePage> {
     final _descriptionController = TextEditingController(
       text: doc.data()['cropDescription'],
     );
+    final _productionController = TextEditingController(
+      text: doc.data()['production'],
+    );
+    final _farmerPriceController = TextEditingController(
+      text: doc.data()['farmerRate'],
+    );
+    final _marketPriceController = TextEditingController(
+      text: doc.data()['marketRate'],
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) => Center(
+        child: SingleChildScrollView(
+          child: AlertDialog(
+            title: const Text('Update'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TextField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Name',
+                  ),
+                ),
+                TextField(
+                  controller: _descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                  ),
+                ),
+                TextField(
+                  controller: _productionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Production',
+                  ),
+                ),
+                TextField(
+                  controller: _farmerPriceController,
+                  decoration: const InputDecoration(
+                    labelText: 'Farmer Price',
+                  ),
+                ),
+                TextField(
+                  controller: _marketPriceController,
+                  decoration: const InputDecoration(
+                    labelText: 'Market Price',
+                  ),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              ElevatedButton(
+                child: const Text('Update'),
+                onPressed: () {
+                  FirebaseFirestore.instance
+                      .collection('crops')
+                      .doc(doc.id)
+                      .update({
+                    'name': _nameController.text,
+                    'cropDescription': _descriptionController.text,
+                    'production': _productionController.text,
+                    'farmerRate': _farmerPriceController.text,
+                    'marketRate': _marketPriceController.text,
+                  });
+                  Navigator.pop(context);
+                  Fluttertoast.showToast(
+                    msg: 'Crop updated successfully',
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.green,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+                },
+              ),
+              ElevatedButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  viewCropsDetails(BuildContext context, doc) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Update'),
+        title: const Text('Details'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Name',
+            Text(
+              '${doc.data()['name']}',
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            TextField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Description: ${doc.data()['cropDescription']}',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Production: ${doc.data()['production']}',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Frarmer Price: ${doc.data()['farmerRate']}',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Retailer Price: ${doc.data()['marketRate']}',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Province: ${loggedInUser.province}',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              'Ward: ${loggedInUser.ward}',
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ],
         ),
-        actions: <Widget>[
-          ElevatedButton(
-            child: const Text('Update'),
-            onPressed: () {
-              FirebaseFirestore.instance
-                  .collection('crops')
-                  .doc(doc.id)
-                  .update({
-                'name': _nameController.text,
-                'cropDescription': _descriptionController.text,
-              });
-              Navigator.pop(context);
-              Fluttertoast.showToast(
-                msg: 'Crop updated successfully',
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.BOTTOM,
-                timeInSecForIosWeb: 1,
-                backgroundColor: Colors.green,
-                textColor: Colors.white,
-                fontSize: 16.0,
-              );
-            },
-          ),
-          ElevatedButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
       ),
     );
   }
