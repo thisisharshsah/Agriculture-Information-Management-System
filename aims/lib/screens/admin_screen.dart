@@ -64,27 +64,41 @@ class _AdminScreenState extends State<AdminScreen> {
         return ListView.builder(
           itemCount: data.size,
           itemBuilder: (context, index) {
-            return ListTile(
-              title: Text(data.docs[index].data()['firstName'] +
-                  ' ' +
-                  data.docs[index].data()['secondName']),
-              subtitle: Text(data.docs[index].data()['email']),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      showUpdateDialog(context, data.docs[index]);
-                    },
+            return Container(
+              padding: const EdgeInsets.all(8),
+              child: GestureDetector(
+                child: Card(
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text(data.docs[index].data()['firstName'] +
+                            ' ' +
+                            data.docs[index].data()['secondName']),
+                        subtitle: Text(data.docs[index].data()['email']),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () {
+                                showUpdateDialog(context, data.docs[index]);
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                showDeleteDialouge(context, data.docs[index]);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      showDeleteDialouge(context, data.docs[index]);
-                    },
-                  ),
-                ],
+                ),
+                onTap: () {
+                  _viewUserDetails(context, data.docs[index]);
+                },
               ),
             );
           },
@@ -479,6 +493,33 @@ class _AdminScreenState extends State<AdminScreen> {
           ),
           ElevatedButton(
             child: const Text('Cancel'),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _viewUserDetails(BuildContext context, doc) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('User Details'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+                'Name: ${doc.data()['firstName']} ${doc.data()['secondName']}'),
+            Text('Email: ${doc.data()['email']}'),
+            Text('Role: ${doc.data()['role']}'),
+          ],
+        ),
+        actions: <Widget>[
+          ElevatedButton(
+            child: const Text('Close'),
             onPressed: () {
               Navigator.pop(context);
             },
