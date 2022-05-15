@@ -1,3 +1,4 @@
+import 'package:aims/api/user_sheet_api.dart';
 import 'package:aims/screens/login_page.dart';
 import 'package:aims/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -284,6 +285,7 @@ class _RegisterPageState extends State<RegistrationPage> {
     userModel.secondName = secondNameEditingController.text;
     userModel.password = confirmPasswordEditingController.text;
     userModel.role = 'user';
+    await UserSheetApi.insertUser(userModel);
 
     await firebasefirestore
         .collection("users")
@@ -297,6 +299,7 @@ class _RegisterPageState extends State<RegistrationPage> {
         backgroundColor: Colors.green,
         textColor: Colors.white,
         fontSize: 16.0);
+
     Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (context) => const LoginPage()),

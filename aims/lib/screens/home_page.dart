@@ -1,5 +1,4 @@
 import 'package:aims/models/crops_model.dart';
-import 'package:aims/screens/login_page.dart';
 import 'package:aims/models/user_model.dart';
 import 'package:aims/widgets/bottom_navigation.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

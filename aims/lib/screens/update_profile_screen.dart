@@ -1,4 +1,3 @@
-import 'package:aims/models/user_model.dart';
 import 'package:aims/screens/profile_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,7 +14,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   User? user = FirebaseAuth.instance.currentUser;
 
   final _formKey = GlobalKey<FormState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

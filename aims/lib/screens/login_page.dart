@@ -1,4 +1,3 @@
-import 'package:aims/screens/home_page.dart';
 import 'package:aims/screens/registration_page.dart';
 import 'package:aims/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -61,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
         if (value!.isEmpty) {
           return 'Please Enter Your password';
         }
-        RegExp regExp = new RegExp(r'^.{6,}$');
+        RegExp regExp = RegExp(r'^.{6,}$');
         if (value.isEmpty) {
           return 'Please Enter Your password';
         }
